@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #fbf9f6;
+  --surface: #ffffff;
+  --surface-2: #f5f3f0;
+  --surface-3: #eae8e5;
+  --ink: #1b1c1a;
+  --ink-2: #4e4639;
+  --muted: #6b6357;
+  --line: #e4dfd6;
+  --gold: #775a19;
+  --accent: #c5a059;
+  --wa: #0b6b57;
+  --dark: #30312f;
+  --danger: #ba1a1a;
+  --ok: #2d6a4f;
+}
+
+:root[data-theme='dark'] {
+  --bg: #131311;
+  --surface: #1c1c1a;
+  --surface-2: #242422;
+  --surface-3: #2d2d2a;
+  --ink: #f2f0ed;
+  --ink-2: #d9d1c1;
+  --muted: #a59d8e;
+  --line: #3a3935;
+  --gold: #e9c176;
+  --accent: #c5a059;
+  --wa: #1a7f67;
+  --dark: #0b0b0a;
+  --danger: #ff8a80;
+  --ok: #7bd3a6;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+}
+
+.prose h2 {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 500;
+  margin: 1.5rem 0 0.5rem;
+}
+.prose p,
+.prose li {
+  color: var(--ink-2);
+  margin-bottom: 0.65rem;
+  line-height: 1.7;
+}
+.prose ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin: 0.75rem 0;
+}
+.prose th,
+.prose td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
