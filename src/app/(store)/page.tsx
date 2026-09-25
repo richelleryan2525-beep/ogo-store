@@ -2,6 +2,8 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import Hero from '@/components/Hero';
 import CategoryStrip from '@/components/CategoryStrip';
+import BrandStatement from '@/components/BrandStatement';
+import ShopTheLook from '@/components/ShopTheLook';
 import TrustStrip from '@/components/TrustStrip';
 import HowItWorks from '@/components/HowItWorks';
 import ProductGrid from '@/components/ProductGrid';
@@ -34,7 +36,14 @@ export default async function HomePage() {
       <Reveal className="mt-6">
         <CategoryStrip />
       </Reveal>
+      <Reveal>
+        <BrandStatement />
+      </Reveal>
       <TrustStrip />
+
+      <Reveal>
+        <ShopTheLook />
+      </Reveal>
 
       <section className="py-6">
         <div className="mb-3.5 flex items-end justify-between">

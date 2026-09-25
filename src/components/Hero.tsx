@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { STORE_NAME, STORE_WHATSAPP, HERO_IMAGE, HERO_IMAGE_POSITION, HERO_BADGE, HERO_HEADLINE, HERO_SUBTEXT, HERO_CTA_LABEL } from '@/lib/utils';
+import { STORE_NAME, STORE_WHATSAPP, HERO_IMAGE, HERO_VIDEO, HERO_IMAGE_POSITION, HERO_BADGE, HERO_HEADLINE, HERO_SUBTEXT, HERO_CTA_LABEL } from '@/lib/utils';
 import { WaIcon } from './Icons';
 
 export default function Hero() {
@@ -23,9 +23,23 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden bg-[#141312] text-[#f2f0ed] min-h-[88svh] md:min-h-screen"
+      className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden bg-[#141312] text-[#f2f0ed] min-h-[60svh] md:min-h-screen"
     >
-      {HERO_IMAGE ? (
+      {HERO_VIDEO ? (
+        <motion.div style={{ y: imageY }} className="absolute inset-0">
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            poster={HERO_IMAGE || undefined}
+            className="h-full w-full object-cover"
+            style={{ objectPosition: HERO_IMAGE_POSITION }}
+          >
+            <source src={HERO_VIDEO} />
+          </video>
+        </motion.div>
+      ) : HERO_IMAGE ? (
         <motion.div style={{ y: imageY }} className="absolute inset-0">
           <Image
             src={HERO_IMAGE}
@@ -43,18 +57,18 @@ export default function Hero() {
           className="pointer-events-none absolute inset-x-0 -top-10 mx-auto h-[76%] aspect-square bg-[radial-gradient(circle_at_center,rgba(233,193,118,0.35),transparent_70%)] md:right-0 md:left-auto md:h-full md:w-[46%]"
         />
       )}
-      {/* Light gradient, just enough for the headline to stay readable, so the photo reads clearly */}
+      {/* Light gradient, just enough for the headline to stay readable, so the photo/video reads clearly */}
       <div
         className="absolute inset-0"
         style={{
-          background: HERO_IMAGE
-            ? 'linear-gradient(to top, #141312 0%, rgba(20,19,18,.55) 28%, rgba(20,19,18,0) 62%)'
+          background: HERO_VIDEO || HERO_IMAGE
+            ? 'linear-gradient(to top, #141312 0%, rgba(20,19,18,.85) 35%, rgba(20,19,18,0.4) 62%)'
             : 'linear-gradient(to top, #141312 12%, rgba(20,19,18,.82) 45%, rgba(20,19,18,0) 78%), linear-gradient(to right, #141312 28%, rgba(20,19,18,.55) 55%, rgba(20,19,18,0) 78%)'
         }}
       />
       <motion.div
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 mx-auto flex min-h-[88svh] max-w-6xl flex-col justify-end px-5 pb-16 md:min-h-screen md:px-10 md:pb-24"
+        className="relative z-10 mx-auto flex min-h-[60svh] max-w-6xl flex-col justify-end px-5 pb-16 md:min-h-screen md:px-10 md:pb-24"
       >
         <div className="max-w-xl">
         <motion.span

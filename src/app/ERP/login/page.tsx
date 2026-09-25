@@ -50,17 +50,19 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
-            className="min-h-[48px] w-full rounded-xl border border-line bg-bg px-3.5"
+            placeholder='Enter your email'
+            className="min-h-[48px] w-full text-xs sm:text-sm rounded-xl border border-line bg-bg px-3.5"
           />
         </div>
         <div className="mb-5">
           <label className="mb-1.5 block text-sm font-semibold">Password</label>
           <input
             type="password"
+            placeholder='Enter your password'
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
-            className="min-h-[48px] w-full rounded-xl border border-line bg-bg px-3.5"
+            className="min-h-[48px] w-full rounded-xl text-xs sm:text-sm border border-line bg-bg px-3.5"
           />
         </div>
         {err && <div className="mb-4 rounded-lg border border-danger/30 bg-danger/10 p-3 text-sm font-medium text-danger">{err}</div>}

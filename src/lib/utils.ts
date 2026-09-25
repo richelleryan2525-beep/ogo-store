@@ -7,6 +7,9 @@ export const FREE_LAGOS_OVER = Number(process.env.FREE_LAGOS_DELIVERY_OVER || 15
 // Set NEXT_PUBLIC_HERO_IMAGE to a photo URL (e.g. from Cloudinary) to replace
 // the plain gold-glow hero background with a real photo.
 export const HERO_IMAGE = process.env.NEXT_PUBLIC_HERO_IMAGE || '';
+// Optional background video (mp4). Takes priority over HERO_IMAGE when set;
+// HERO_IMAGE is still used as the video's poster frame while it loads.
+export const HERO_VIDEO = process.env.NEXT_PUBLIC_HERO_VIDEO || '';
 // Adjust which part of a tall/off-center photo shows, e.g. 'top', 'center', 'bottom',
 // or precise values like '50% 20%'.
 export const HERO_IMAGE_POSITION = process.env.NEXT_PUBLIC_HERO_IMAGE_POSITION || 'center';
@@ -16,6 +19,18 @@ export const HERO_SUBTEXT =
   process.env.NEXT_PUBLIC_HERO_SUBTEXT ||
   'Hallmarked 18k gold and diamonds, handcrafted in Lagos and delivered across Nigeria with real order tracking.';
 export const HERO_CTA_LABEL = process.env.NEXT_PUBLIC_HERO_CTA_LABEL || 'Shop the collection';
+
+export const BRAND_STATEMENT_HEADLINE = process.env.NEXT_PUBLIC_BRAND_HEADLINE || 'Jewelry you can live in';
+export const BRAND_STATEMENT_BODY =
+  process.env.NEXT_PUBLIC_BRAND_BODY ||
+  "Hallmarked gold and diamonds, handcrafted in Lagos — made for everyday wear, not just special occasions.\n\nWe believe fine jewelry shouldn't wait for a birthday or anniversary. It's for marking your own milestones, whenever they happen.";
+
+// Up to 3 "shop the look" photos. Leave an image blank to hide that card.
+export const SHOP_THE_LOOK = [
+  { image: process.env.NEXT_PUBLIC_LOOK_1_IMAGE || '', href: process.env.NEXT_PUBLIC_LOOK_1_LINK || '/shop' },
+  { image: process.env.NEXT_PUBLIC_LOOK_2_IMAGE || '', href: process.env.NEXT_PUBLIC_LOOK_2_LINK || '/shop' },
+  { image: process.env.NEXT_PUBLIC_LOOK_3_IMAGE || '', href: process.env.NEXT_PUBLIC_LOOK_3_LINK || '/shop' }
+];
 
 export const CATEGORIES = ['Rings', 'Necklaces', 'Earrings', 'Bracelets'] as const;
 export const METALS = ['18k Gold', 'Sterling Silver', 'Gold-Plated', 'Stainless Steel'] as const;
