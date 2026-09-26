@@ -88,8 +88,13 @@ export default function AdminShell({ admin, children }: { admin: AdminTokenPaylo
 
         <div className="min-w-0 flex-1">
           <header className="flex h-16 items-center justify-between border-b border-line bg-surface px-4 md:px-6">
-            <button onClick={() => setOpen(true)} className="grid h-10 w-10 place-items-center md:hidden" aria-label="Open menu">
+            <button onClick={() => setOpen(true)} className="relative grid h-10 w-10 place-items-center md:hidden" aria-label="Open menu">
               <MenuIcon />
+              {pendingCount > 0 && (
+                <span className="absolute right-0.5 top-0.5 grid h-4 min-w-[16px] place-items-center rounded-full bg-danger px-1 text-[10px] font-bold text-white">
+                  {pendingCount > 99 ? '99+' : pendingCount}
+                </span>
+              )}
             </button>
             <span className="hidden text-sm text-muted md:block">Admin control panel</span>
             <div className="flex items-center gap-3">
