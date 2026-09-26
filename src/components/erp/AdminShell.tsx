@@ -28,9 +28,7 @@ export default function AdminShell({ admin, children }: { admin: AdminTokenPaylo
         .catch(() => {});
     }
     checkPending();
-    // Poll periodically, and immediately whenever the admin comes back to
-    // this tab, so a new order shows up without needing a manual refresh.
-    const interval = setInterval(checkPending, 20000);
+    const interval = setInterval(checkPending, 15000);
     window.addEventListener('focus', checkPending);
     return () => {
       clearInterval(interval);
