@@ -4,9 +4,9 @@ import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { fmtNaira } from '@/lib/utils';
+import { fmtNaira, STORE_WHATSAPP } from '@/lib/utils';
 import StatusTimeline from '@/components/StatusTimeline';
-import { CheckIcon, CopyIcon, PackageIcon } from '@/components/Icons';
+import { CheckIcon, CopyIcon, PackageIcon, WaIcon } from '@/components/Icons';
 
 interface TrackData {
   orderNumber: string;
@@ -33,9 +33,30 @@ function TrackContent() {
   const params = useParams<{ token: string }>();
   const sp = useSearchParams();
   const isNew = sp.get('new') === '1';
+  const paymentResult = sp.get('payment'); // 'success' | 'failed' | 'error' | null
   const [data, setData] = useState<TrackData | null>(null);
   const [err, setErr] = useState('');
   const [copied, setCopied] = useState(false);
+  const [payLoading, setPayLoading] = useState(false);
+  const [payError, setPayError] = useState('');
+
+  async function payNow() {
+    setPayLoading(true);
+    setPayError('');
+    try {
+      const res = await fetch('/api/orders/pay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ trackingToken: params.token })
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Could not start payment.');
+      window.location.href = json.authorizationUrl;
+    } catch (e) {
+      setPayError(e instanceof Error ? e.message : 'Could not start payment.');
+      setPayLoading(false);
+    }
+  }
 
   useEffect(() => {
     let active = true;
@@ -87,6 +108,19 @@ function TrackContent() {
         </motion.div>
       )}
 
+      {isNew && data.paymentStatus === 'unpaid' && (
+        <a
+          href={`https://wa.me/${STORE_WHATSAPP}?text=${encodeURIComponent(
+            `Hello! I just placed order ${data.orderNumber} for ${fmtNaira(data.total)}. I'd like to arrange payment, please.`
+          )}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mb-5 flex min-h-[50px] items-center justify-center gap-2 rounded-xl bg-wa px-5 font-semibold text-white"
+        >
+          <WaIcon size={20} /> Message us on WhatsApp to pay
+        </a>
+      )}
+
       <p className="text-sm text-muted">Order</p>
       <h1 className="mb-1 font-serif text-3xl font-medium">{data.orderNumber}</h1>
       <p className="mb-5 text-ink-2">
@@ -98,10 +132,28 @@ function TrackContent() {
         <StatusTimeline status={data.status} />
       </div>
 
+      {paymentResult === 'success' && (
+        <div className="mb-6 rounded-xl border border-ok/30 bg-ok/10 p-4 text-sm text-ok">
+          Payment received — thank you! Your order is now confirmed.
+        </div>
+      )}
+      {(paymentResult === 'failed' || paymentResult === 'error') && (
+        <div className="mb-6 rounded-xl border border-red-300 bg-red-50 p-4 text-sm text-red-700">
+          That payment didn't go through. You can try again below.
+        </div>
+      )}
+
       {data.paymentStatus === 'unpaid' && data.status !== 'cancelled' && (
         <div className="mb-6 rounded-xl border-l-4 border-accent bg-surface-2 p-4 text-sm text-ink-2">
-          We're waiting to confirm your payment. We'll reach out with our bank details if we haven't already —
-          message us if you'd like a reminder.
+          <p className="mb-3">Pay online with card, transfer or USSD via Paystack, or we'll reach out with our bank details for a manual transfer.</p>
+          <button
+            onClick={payNow}
+            disabled={payLoading}
+            className="min-h-[46px] w-full rounded-xl bg-ink px-5 font-semibold text-bg disabled:opacity-60"
+          >
+            {payLoading ? 'Starting payment…' : 'Pay online now'}
+          </button>
+          {payError && <p className="mt-2 text-sm text-red-600">{payError}</p>}
         </div>
       )}
 
