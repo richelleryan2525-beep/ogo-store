@@ -32,14 +32,17 @@ export async function GET() {
   const byStatus: Record<string, number> = {};
   for (const o of orders) byStatus[o.status] = (byStatus[o.status] || 0) + 1;
 
-  return NextResponse.json({
-    productCount,
-    lowStock,
-    customerCount,
-    orderCount: orders.length,
-    pendingOrders,
-    revenuePaid,
-    byStatus,
-    recentOrders
-  });
+  return NextResponse.json(
+    {
+      productCount,
+      lowStock,
+      customerCount,
+      orderCount: orders.length,
+      pendingOrders,
+      revenuePaid,
+      byStatus,
+      recentOrders
+    },
+    { headers: { 'Cache-Control': 'no-store, no-cache, must-revalidate' } }
+  );
 }

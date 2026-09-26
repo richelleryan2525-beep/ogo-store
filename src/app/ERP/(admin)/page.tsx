@@ -32,11 +32,15 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     load();
-    // Refetch whenever the tab/window regains focus, so numbers don't go
-    // stale if the admin leaves this tab open and comes back later.
+    // Poll on a timer so new orders/numbers show up automatically, plus
+    // refetch immediately whenever the admin returns to this tab.
+    const interval = setInterval(() => load(), 15000);
     const onFocus = () => load();
     window.addEventListener('focus', onFocus);
-    return () => window.removeEventListener('focus', onFocus);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
+    };
   }, []);
 
   if (err) return <p className="text-danger">{err}</p>;
