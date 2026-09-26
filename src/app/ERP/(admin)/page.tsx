@@ -20,9 +20,23 @@ interface Dashboard {
 export default function AdminDashboard() {
   const [data, setData] = useState<Dashboard | null>(null);
   const [err, setErr] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+
+  function load(showSpinner = false) {
+    if (showSpinner) setRefreshing(true);
+    erpFetch('/api/erp/dashboard')
+      .then(setData)
+      .catch((e) => setErr(e.message))
+      .finally(() => setRefreshing(false));
+  }
 
   useEffect(() => {
-    erpFetch('/api/erp/dashboard').then(setData).catch((e) => setErr(e.message));
+    load();
+    // Refetch whenever the tab/window regains focus, so numbers don't go
+    // stale if the admin leaves this tab open and comes back later.
+    const onFocus = () => load();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
   }, []);
 
   if (err) return <p className="text-danger">{err}</p>;
@@ -30,7 +44,16 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <h1 className="mb-5 font-serif text-2xl font-medium">Dashboard</h1>
+      <div className="mb-5 flex items-center justify-between">
+        <h1 className="font-serif text-2xl font-medium">Dashboard</h1>
+        <button
+          onClick={() => load(true)}
+          disabled={refreshing}
+          className="rounded-lg border border-line px-3 py-1.5 text-sm font-semibold hover:bg-surface-2 disabled:opacity-50"
+        >
+          {refreshing ? 'Refreshing…' : 'Refresh'}
+        </button>
+      </div>
       <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-5">
         <StatCard label="Orders" value={String(data.orderCount)} hint={`${data.pendingOrders} pending`} />
         <StatCard label="Revenue (paid)" value={fmtNaira(data.revenuePaid)} />
