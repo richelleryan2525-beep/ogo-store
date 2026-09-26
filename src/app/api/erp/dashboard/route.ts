@@ -5,6 +5,7 @@ import Product from '@/lib/models/Product';
 import Customer from '@/lib/models/Customer';
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   await connectDB();

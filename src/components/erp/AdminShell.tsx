@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AdminTokenPayload } from '@/lib/auth';
+import { erpFetch } from '@/lib/erpFetch';
 import { STORE_NAME } from '@/lib/utils';
 import { CloseIcon, MenuIcon } from '../Icons';
 
@@ -18,6 +19,24 @@ export default function AdminShell({ admin, children }: { admin: AdminTokenPaylo
   const pathname = usePathname();
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    function checkPending() {
+      erpFetch('/api/erp/dashboard')
+        .then((d) => setPendingCount(d.pendingOrders || 0))
+        .catch(() => {});
+    }
+    checkPending();
+    // Poll periodically, and immediately whenever the admin comes back to
+    // this tab, so a new order shows up without needing a manual refresh.
+    const interval = setInterval(checkPending, 20000);
+    window.addEventListener('focus', checkPending);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('focus', checkPending);
+    };
+  }, []);
 
   async function logout() {
     await fetch('/api/erp/auth/logout', { method: 'POST' });
@@ -35,11 +54,16 @@ export default function AdminShell({ admin, children }: { admin: AdminTokenPaylo
           key={n.href}
           href={n.href}
           onClick={() => setOpen(false)}
-          className={`rounded-lg px-3 py-2.5 text-sm font-semibold ${
+          className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-semibold ${
             isActive(n.href, n.exact) ? 'bg-ink text-bg' : 'text-ink-2 hover:bg-surface-3'
           }`}
         >
-          {n.label}
+          <span>{n.label}</span>
+          {n.label === 'Orders' && pendingCount > 0 && (
+            <span className="grid h-5 min-w-[20px] place-items-center rounded-full bg-danger px-1.5 text-xs font-bold text-white">
+              {pendingCount > 99 ? '99+' : pendingCount}
+            </span>
+          )}
         </Link>
       ))}
     </nav>
